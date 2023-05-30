@@ -9,19 +9,19 @@ cloudinary.config({
   secure: false,
 });
 
-const resize = async (workFile, size) => {
-  const image = await Jimp.read(workFile);
+// const resize = async (workFile, size) => {
+//   const image = await Jimp.read(workFile);
 
-  image.resize(...size);
+//   image.resize(...size).autocrop();
 
-  await image.writeAsync(workFile);
-};
+//   await image.writeAsync(workFile);
+// };
 
 const uploadToCloudinary = async (file, uploadDir, fileName, size) => {
   const { filename, path: tempUpload } = file;
 
   try {
-    await resize(tempUpload, size);
+    // await resize(tempUpload, size);
 
     const [extention] = filename.split(".").reverse();
 
@@ -29,6 +29,7 @@ const uploadToCloudinary = async (file, uploadDir, fileName, size) => {
 
     const result = await cloudinary.uploader.upload(tempUpload, {
       public_id: filePathOnCloudinary,
+      transformation: { width: 350, height: 350, crop: "lfill" },
     });
 
     return { url: result.url, public_id: result.public_id };
